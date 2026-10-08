@@ -62,12 +62,12 @@ export default async function RootLayout({
       >
         <ThemeProvider>
           <LanguageProvider initialLocale={locale}>
-            <div className="max-w-3xl mx-auto px-6">
+            <div className="mx-auto flex min-h-screen w-full max-w-3xl flex-col px-6">
               <SiteHeader
                 userName={session?.user?.name ?? session?.user?.email ?? null}
                 authProviders={authProviders}
               />
-              <main className="py-10">{children}</main>
+              <main className="flex-1 py-10">{children}</main>
               <SiteFooter />
             </div>
           </LanguageProvider>
