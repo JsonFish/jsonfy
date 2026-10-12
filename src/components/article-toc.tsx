@@ -110,9 +110,9 @@ export function ArticleToc({ editor }: { editor: Editor }) {
         <div className="mt-3 max-h-72 overflow-y-auto">{links}</div>
       </details>
       <aside className="absolute top-0 left-full ml-6 hidden h-full w-60 xl:block">
-        <div className="sticky top-28 max-h-[calc(100dvh-9rem)] overflow-y-auto">
-          <p className="mb-4 text-sm font-semibold">{t("article.toc")}</p>
-          {links}
+        <div className="sticky top-28 flex max-h-[calc(100dvh-9rem)] flex-col">
+          <p className="mb-4 shrink-0 text-sm font-semibold">{t("article.toc")}</p>
+          <div className="min-h-0 flex-1 overflow-y-auto">{links}</div>
         </div>
       </aside>
     </>

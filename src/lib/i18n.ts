@@ -80,7 +80,7 @@ const zh: Record<MessageKey, string> = {
   "list.end": "已经到底了。",
   "list.empty": "暂无内容。",
   "article.loading": "正在加载内容…",
-  "article.toc": "文章目录",
+  "article.toc": "目录",
   "editor.title": "文章编辑器",
   "editor.subtitle": "使用 Tiptap 编辑器创建与编辑内容。",
   "editor.save": "保存文章",
