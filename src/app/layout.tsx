@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { LanguageProvider } from "@/components/language-provider";
@@ -7,17 +6,6 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { auth, authProviders } from "@/auth";
 import { getRequestLocale } from "@/lib/server-locale";
-
-// Geist（无衬线）和 Geist_Mono（等宽）
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"], // 仅加载拉丁字符子集
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 /**
  * 配置页面标题和描述，SEO
@@ -58,7 +46,7 @@ export default async function RootLayout({
         />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-background text-foreground selection:bg-zinc-200 dark:selection:bg-zinc-800`}
+        className="antialiased min-h-screen bg-background text-foreground selection:bg-zinc-200 dark:selection:bg-zinc-800"
       >
         <ThemeProvider>
           <LanguageProvider initialLocale={locale}>
