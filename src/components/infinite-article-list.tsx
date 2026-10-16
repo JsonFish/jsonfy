@@ -84,7 +84,6 @@ export function InfiniteArticleList({
   const loadingRef = useRef(false);
   const abortRef = useRef<AbortController | null>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
-  const isPost = type === "post";
 
   const loadMore = useCallback(async () => {
     if (!hasMore || loadingRef.current || selectedLocale !== locale) return;
@@ -145,15 +144,6 @@ export function InfiniteArticleList({
 
   return (
     <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      <section className="space-y-4">
-        <h1 className="text-4xl font-bold tracking-tight">
-          {t(isPost ? "posts.title" : "notes.title")}
-        </h1>
-        <p className="max-w-lg text-zinc-500 dark:text-zinc-400">
-          {t(isPost ? "posts.subtitle" : "notes.subtitle")}
-        </p>
-      </section>
-
       <div className="grid gap-12">
         {items.map((item) => (
           <article key={item.slug} className="group flex flex-col items-start">

@@ -19,8 +19,7 @@ export default async function PostPage({
   return (
     <article className="animate-in fade-in slide-in-from-bottom-4 duration-700">
       <ArticleScrollReset />
-      <header className="mb-12">
-        <BackLink href="/posts" />
+      <header>
         <div className="space-y-4">
           <time className="text-sm text-zinc-400">
             {formatArticleDate(post.createTime, locale)}
@@ -30,6 +29,7 @@ export default async function PostPage({
           </h1>
         </div>
       </header>
+      <BackLink href="/posts" />
       <Tiptap
         key={`${post.slug}-${locale}`}
         content={post.content}
