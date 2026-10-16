@@ -4,6 +4,7 @@ import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 import { LoaderCircle } from "lucide-react";
 import { useLanguage } from "@/components/language-provider";
 import { ArticleLink } from "@/components/article-scroll-reset";
+import { ArticleDate } from "@/components/article-date";
 import { Button } from "@/components/ui/button";
 import type {
   ArticleListItem,
@@ -147,7 +148,11 @@ export function InfiniteArticleList({
       <div className="grid gap-12">
         {items.map((item) => (
           <article key={item.slug} className="group flex flex-col items-start">
-            <time className="mb-2 text-sm text-zinc-400">{item.date}</time>
+            <ArticleDate
+              dateTime={item.createdAt}
+              fallback={item.date}
+              className="mb-2 text-sm text-zinc-400"
+            />
             <h2 className="mb-3 text-xl font-semibold transition-colors group-hover:text-zinc-600 dark:group-hover:text-zinc-300">
               <ArticleLink href={`/${type}s/${item.slug}`}>
                 {item.title}

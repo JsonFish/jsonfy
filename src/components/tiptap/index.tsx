@@ -164,11 +164,13 @@ const Tiptap = ({
   content = "",
   editable = true,
   showTableOfContents = false,
+  backHref,
   onChange = () => {},
 }: {
   content?: string;
   editable?: boolean;
   showTableOfContents?: boolean;
+  backHref?: string;
   onChange?: (markdown: string) => void;
 }) => {
   const editor = useEditor({
@@ -196,7 +198,9 @@ const Tiptap = ({
 
   return (
     <div className="relative w-full min-w-0">
-      {!editable && showTableOfContents && editor && <ArticleToc editor={editor} />}
+      {!editable && showTableOfContents && editor && (
+        <ArticleToc editor={editor} backHref={backHref} />
+      )}
       {editable && <Toolbar editor={editor} />}
       <EditorContent editor={editor} />
     </div>

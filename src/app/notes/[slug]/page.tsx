@@ -1,6 +1,6 @@
 import Tiptap from "@/components/tiptap";
-import { BackLink } from "@/components/back-link";
 import { ArticleScrollReset } from "@/components/article-scroll-reset";
+import { ArticleDate } from "@/components/article-date";
 import { formatArticleDate, getBlogArticle } from "@/lib/blog-api";
 import { notFound } from "next/navigation";
 import { getRequestLocale } from "@/lib/server-locale";
@@ -19,22 +19,24 @@ export default async function NotePage({
   return (
     <article className="animate-in fade-in slide-in-from-bottom-4 duration-700">
       <ArticleScrollReset />
-      <header>
+      <header className="mb-0 xl:mb-12">
         <div className="space-y-4">
-          <time className="text-sm text-zinc-400">
-            {formatArticleDate(note.createTime, locale)}
-          </time>
+          <ArticleDate
+            dateTime={note.createTime}
+            fallback={formatArticleDate(note.createTime, locale)}
+            className="text-sm text-zinc-400"
+          />
           <h1 className="text-2xl sm:text-3xl font-bold tracking-tight leading-tight">
             {note.title}
           </h1>
         </div>
       </header>
-      <BackLink href="/notes" />
       <Tiptap
         key={`${note.slug}-${locale}`}
         content={note.content}
         editable={false}
         showTableOfContents
+        backHref="/notes"
       />
     </article>
   );

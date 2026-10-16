@@ -4,10 +4,17 @@ import { useEffect, useState, type MouseEvent } from "react";
 import { useEditorState, type Editor } from "@tiptap/react";
 import { ChevronDown } from "lucide-react";
 import { useLanguage } from "@/components/language-provider";
+import { BackLink } from "@/components/back-link";
 import { getArticleHeadings } from "@/components/tiptap/heading-anchors";
 import { cn } from "@/lib/utils";
 
-export function ArticleToc({ editor }: { editor: Editor }) {
+export function ArticleToc({
+  editor,
+  backHref,
+}: {
+  editor: Editor;
+  backHref?: string;
+}) {
   const { t } = useLanguage();
   const headings = useEditorState({
     editor,
@@ -54,7 +61,24 @@ export function ArticleToc({ editor }: { editor: Editor }) {
     };
   }, [editor, headings]);
 
-  if (!headings.length) return null;
+  if (!headings.length) {
+    if (!backHref) return null;
+    return (
+      <>
+        <div className="xl:hidden">
+          <BackLink href={backHref} />
+        </div>
+        <aside className="absolute top-0 left-full ml-6 hidden h-full w-60 xl:block">
+          <div className="sticky top-28 flex max-h-[calc(100dvh-9rem)] flex-col">
+            <BackLink
+              href={backHref}
+              className="my-8 xl:mt-0 xl:mb-6"
+            />
+          </div>
+        </aside>
+      </>
+    );
+  }
   const minLevel = Math.min(...headings.map(({ level }) => level));
 
   const navigate = (event: MouseEvent<HTMLAnchorElement>, id: string) => {
@@ -102,15 +126,24 @@ export function ArticleToc({ editor }: { editor: Editor }) {
 
   return (
     <>
-      <details className="group mb-8 rounded-xl border border-border px-4 py-3 xl:hidden">
-        <summary className="flex cursor-pointer list-none items-center justify-between text-sm font-medium [&::-webkit-details-marker]:hidden">
-          {t("article.toc")}
-          <ChevronDown className="size-4 transition-transform group-open:rotate-180" />
-        </summary>
-        <div className="mt-3 max-h-72 overflow-y-auto">{links}</div>
-      </details>
+      <div className="xl:hidden">
+        {backHref && <BackLink href={backHref} />}
+        <details className="group mb-8 rounded-xl border border-border px-4 py-3">
+          <summary className="flex cursor-pointer list-none items-center justify-between text-sm font-medium [&::-webkit-details-marker]:hidden">
+            {t("article.toc")}
+            <ChevronDown className="size-4 transition-transform group-open:rotate-180" />
+          </summary>
+          <div className="mt-3 max-h-72 overflow-y-auto">{links}</div>
+        </details>
+      </div>
       <aside className="absolute top-0 left-full ml-6 hidden h-full w-60 xl:block">
         <div className="sticky top-28 flex max-h-[calc(100dvh-9rem)] flex-col">
+          {backHref && (
+            <BackLink
+              href={backHref}
+              className="my-8 xl:mt-0 xl:mb-6"
+            />
+          )}
           <p className="mb-4 shrink-0 text-sm font-semibold">{t("article.toc")}</p>
           <div className="min-h-0 flex-1 overflow-y-auto">{links}</div>
         </div>

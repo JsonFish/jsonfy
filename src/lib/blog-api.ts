@@ -115,17 +115,21 @@ export async function getBlogArticle(
 }
 
 export function formatArticleDate(value: string, locale: Locale = defaultLocale) {
+  const date = new Date(value);
+  const includeYear = date.getFullYear() !== new Date().getFullYear();
+
   return new Intl.DateTimeFormat(locale === "zh" ? "zh-CN" : "en-US", {
-    year: "numeric",
+    ...(includeYear ? { year: "numeric" as const } : {}),
     month: "short",
     day: "2-digit",
-  }).format(new Date(value));
+  }).format(date);
 }
 
 /** 列表与首页卡片共用的展示模型：压平接口字段并预格式化日期 */
 export type ArticleListItem = {
   title: string;
   date: string;
+  createdAt: string;
   description: string;
   slug: string;
 };
@@ -137,6 +141,7 @@ export function toArticleListItem(
   return {
     title: article.title,
     date: formatArticleDate(article.createTime, locale),
+    createdAt: article.createTime,
     description: article.description,
     slug: article.slug,
   };

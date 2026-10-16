@@ -5,6 +5,7 @@ import { ArticleLink } from "@/components/article-scroll-reset";
 import Image from "next/image";
 import { Github, Mail } from "lucide-react";
 import { useLanguage } from "@/components/language-provider";
+import { ArticleDate } from "@/components/article-date";
 import type { ArticleListItem } from "@/lib/blog-api";
 
 export function HomeContent({ posts }: { posts: ArticleListItem[] }) {
@@ -99,7 +100,11 @@ export function HomeContent({ posts }: { posts: ArticleListItem[] }) {
               key={post.slug}
               className="group flex flex-col items-start"
             >
-              <time className="text-sm text-zinc-400 mb-2">{post.date}</time>
+              <ArticleDate
+                dateTime={post.createdAt}
+                fallback={post.date}
+                className="mb-2 text-sm text-zinc-400"
+              />
               <h2 className="text-xl font-semibold mb-3 group-hover:text-zinc-600 dark:group-hover:text-zinc-300 transition-colors">
                 <ArticleLink href={`/posts/${post.slug}`}>
                   {post.title}
