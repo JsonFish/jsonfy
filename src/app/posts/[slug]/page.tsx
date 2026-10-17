@@ -1,6 +1,7 @@
 import Tiptap from "@/components/tiptap";
 import { ArticleScrollReset } from "@/components/article-scroll-reset";
 import { ArticleDate } from "@/components/article-date";
+import { ArticleSocialActions } from "@/components/article-social-actions";
 import { formatArticleDate, getBlogArticle } from "@/lib/blog-api";
 import { notFound } from "next/navigation";
 import { getRequestLocale } from "@/lib/server-locale";
@@ -19,6 +20,7 @@ export default async function PostPage({
   return (
     <article className="animate-in fade-in slide-in-from-bottom-4 duration-700">
       <ArticleScrollReset />
+      <ArticleSocialActions />
       <header className="mb-0 xl:mb-12">
         <div className="space-y-4">
           <ArticleDate
