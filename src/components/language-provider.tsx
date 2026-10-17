@@ -19,6 +19,44 @@ const LanguageContext = React.createContext<LanguageContextValue | undefined>(
   undefined
 );
 
+const localeListeners = new Set<() => void>();
+
+function getStoredLocale(fallback: Locale): Locale {
+  if (typeof document === "undefined") return fallback;
+
+  const cookie = document.cookie
+    .split("; ")
+    .find((item) => item.startsWith(`${LOCALE_STORAGE_KEY}=`))
+    ?.split("=")[1];
+  if (cookie === "zh" || cookie === "en") return cookie;
+
+  try {
+    const saved = localStorage.getItem(LOCALE_STORAGE_KEY);
+    if (saved === "zh" || saved === "en") return saved;
+  } catch {
+    // Use the server locale when storage is unavailable.
+  }
+
+  return fallback;
+}
+
+function subscribeToLocale(listener: () => void) {
+  localeListeners.add(listener);
+  const onStorage = (event: StorageEvent) => {
+    if (event.key === LOCALE_STORAGE_KEY || event.key === null) listener();
+  };
+  window.addEventListener("storage", onStorage);
+
+  return () => {
+    localeListeners.delete(listener);
+    window.removeEventListener("storage", onStorage);
+  };
+}
+
+function notifyLocaleListeners() {
+  localeListeners.forEach((listener) => listener());
+}
+
 function applyDocumentLang(locale: Locale) {
   document.documentElement.lang = locale === "zh" ? "zh-CN" : "en";
 }
@@ -40,33 +78,25 @@ export function LanguageProvider({
   initialLocale: Locale;
 }) {
   const router = useRouter();
-  const [locale, setLocaleState] = React.useState<Locale>(initialLocale);
+  const locale = React.useSyncExternalStore(
+    subscribeToLocale,
+    () => getStoredLocale(initialLocale),
+    () => initialLocale,
+  );
 
   React.useEffect(() => {
     // Migrate the old localStorage-only preference once. Cookies are the source
     // of truth afterwards so the server and browser agree on the first render.
-    const cookie = document.cookie.split("; ").find((item) =>
-      item.startsWith(`${LOCALE_STORAGE_KEY}=`),
-    )?.split("=")[1];
-    let next = cookie === "zh" || cookie === "en" ? cookie : initialLocale;
-    if (cookie !== "zh" && cookie !== "en") {
-      try {
-        const saved = localStorage.getItem(LOCALE_STORAGE_KEY);
-        if (saved === "zh" || saved === "en") next = saved;
-      } catch {
-        // Use the server locale when storage is unavailable.
-      }
-    }
-    setLocaleState(next);
+    const next = getStoredLocale(initialLocale);
     persistLocale(next);
     applyDocumentLang(next);
     if (next !== initialLocale) router.refresh();
   }, [initialLocale, router]);
 
   const setLocale = React.useCallback((next: Locale) => {
-    setLocaleState(next);
     persistLocale(next);
     applyDocumentLang(next);
+    notifyLocaleListeners();
     router.refresh();
   }, [router]);
 

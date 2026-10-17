@@ -14,14 +14,34 @@ const ThemeContext = React.createContext<ThemeContextType | undefined>(
   undefined
 );
 
-export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = React.useState<Theme>("light");
-  const transitioning = React.useRef(false);
+const themeListeners = new Set<() => void>();
 
-  React.useEffect(() => {
-    // The layout's inline script has already restored the theme before paint.
-    setTheme(document.documentElement.classList.contains("dark") ? "dark" : "light");
-  }, []);
+function subscribeToTheme(listener: () => void) {
+  themeListeners.add(listener);
+  return () => {
+    themeListeners.delete(listener);
+  };
+}
+
+function getThemeSnapshot(): Theme {
+  return document.documentElement.classList.contains("dark") ? "dark" : "light";
+}
+
+function getServerThemeSnapshot(): Theme {
+  return "light";
+}
+
+function notifyThemeChange() {
+  themeListeners.forEach((listener) => listener());
+}
+
+export function ThemeProvider({ children }: { children: React.ReactNode }) {
+  const theme = React.useSyncExternalStore(
+    subscribeToTheme,
+    getThemeSnapshot,
+    getServerThemeSnapshot,
+  );
+  const transitioning = React.useRef(false);
 
   const toggleTheme = async (origin?: { x: number; y: number }) => {
     if (transitioning.current) return;
@@ -30,9 +50,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const isDark = !root.classList.contains("dark");
     const newTheme = isDark ? "dark" : "light";
     const applyTheme = () => {
-      // Commit the React icon and DOM theme together before the new snapshot.
-      flushSync(() => setTheme(newTheme));
       root.classList.toggle("dark", isDark);
+      // Notify React after the DOM has the new class so both update together.
+      flushSync(notifyThemeChange);
       try {
         localStorage.setItem("theme", newTheme);
       } catch {
