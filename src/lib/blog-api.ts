@@ -126,7 +126,7 @@ export function formatArticleDate(value: string, locale: Locale = defaultLocale)
     ].join("-");
   }
 
-  return new Intl.DateTimeFormat(locale === "zh" ? "zh-CN" : "en-US", {
+  return new Intl.DateTimeFormat("en-US", {
     ...(includeYear ? { year: "numeric" as const } : {}),
     month: "short",
     day: "2-digit",
