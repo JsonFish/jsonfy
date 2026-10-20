@@ -11,7 +11,10 @@ export function useRelativeArticleDate(value: string, fallback: string) {
 
   return useSyncExternalStore(
     subscribe,
-    () => formatRelativeArticleDate(value, locale) ?? fallback,
+    () =>
+      locale === "zh"
+        ? fallback
+        : formatRelativeArticleDate(value, locale) ?? fallback,
     () => fallback,
   );
 }

@@ -118,6 +118,14 @@ export function formatArticleDate(value: string, locale: Locale = defaultLocale)
   const date = new Date(value);
   const includeYear = date.getFullYear() !== new Date().getFullYear();
 
+  if (locale === "zh") {
+    return [
+      ...(includeYear ? [date.getFullYear()] : []),
+      date.getMonth() + 1,
+      date.getDate(),
+    ].join("-");
+  }
+
   return new Intl.DateTimeFormat(locale === "zh" ? "zh-CN" : "en-US", {
     ...(includeYear ? { year: "numeric" as const } : {}),
     month: "short",

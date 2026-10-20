@@ -38,6 +38,14 @@ shows a setup hint when a login option is clicked before its credentials and
 This login creates a session for the Next.js website; it does not issue a token
 for the separate Nest API.
 
+For a self-hosted deployment behind a reverse proxy, set `AUTH_URL` to the
+public origin users visit, such as `https://example.com`. Set the GitHub OAuth
+app's **Authorization callback URL** to that exact origin followed by
+`/api/auth/callback/github` (for example,
+`https://example.com/api/auth/callback/github`). The protocol, hostname,
+optional `www`, port, and path must match the `redirect_uri` sent by the app.
+Restart the Next.js process after changing its environment variables.
+
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses `[next/font](https://nextjs.org/docs/app/building-your-application/optimizing/fonts)` to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
