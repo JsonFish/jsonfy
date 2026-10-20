@@ -39,7 +39,9 @@ This login creates a session for the Next.js website; it does not issue a token
 for the separate Nest API.
 
 For a self-hosted deployment behind a reverse proxy, set `AUTH_URL` to the
-public origin users visit, such as `https://example.com`. Set the GitHub OAuth
+public origin users visit, such as `https://example.com`, and set
+`AUTH_TRUST_HOST=true`. Only enable this when the reverse proxy overwrites
+`X-Forwarded-Host` and `X-Forwarded-Proto`. Set the GitHub OAuth
 app's **Authorization callback URL** to that exact origin followed by
 `/api/auth/callback/github` (for example,
 `https://example.com/api/auth/callback/github`). The protocol, hostname,

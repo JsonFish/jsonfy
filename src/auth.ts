@@ -16,6 +16,9 @@ export const authProviders = {
 };
 
 export const { handlers, auth } = NextAuth({
+  // Self-hosted production runs behind a reverse proxy. Set AUTH_TRUST_HOST=true
+  // only when that proxy overwrites the forwarded host/protocol headers.
+  trustHost: process.env.AUTH_TRUST_HOST === "true",
   providers: [
     ...(authProviders.github ? [GitHub] : []),
     ...(authProviders.google ? [Google] : []),
