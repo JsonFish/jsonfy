@@ -34,9 +34,16 @@ secrets in `AUTH_GITHUB_ID`, `AUTH_GITHUB_SECRET`, `AUTH_GOOGLE_ID`, and
 
 Register the corresponding HTTPS callback URLs for production. The header
 shows a setup hint when a login option is clicked before its credentials and
-`AUTH_SECRET` are configured.
-This login creates a session for the Next.js website; it does not issue a token
-for the separate Nest API.
+`AUTH_SECRET` are configured. On a successful GitHub login, Next.js sends the
+provider access token from the server to Nest at `POST /auth/github/token`. Nest
+verifies the token against the configured GitHub OAuth app, then creates or
+updates the user by GitHub ID and returns the application JWTs. The JWTs stay in
+Auth.js's encrypted HTTP-only session cookie; they are not included in the
+browser-visible session.
+
+Set `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` in the Nest environment to the
+same values as `AUTH_GITHUB_ID` and `AUTH_GITHUB_SECRET` in Next.js. Also make
+sure `NEST_API_URL` points to the Nest service.
 
 For a self-hosted deployment behind a reverse proxy, set `AUTH_URL` to the
 public origin users visit, such as `https://example.com`, and set
